@@ -29,12 +29,3 @@ steps:
     args:
       - "run"
       - "e2e"
-
-  - id: "upload videos"
-    name: "gcr.io/cloud-builders/gsutil"
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - "-e"
-      - |
-        gsutil -m cp -r ./cypress/videos/* gs://e2e-test-videos

@@ -1,14 +1,10 @@
 import React from "react";
 import { useState } from "react";
+import NewTodo from "./components/NewTodo";
 import TodoItem from "./components/TodoItem";
 
 function App() {
-  const [todos, setTodos] = useState([
-    { completed: false, title: "First item" },
-    { completed: false, title: "Second item" },
-    { completed: false, title: "Third item" },
-    { completed: false, title: "Fourth item" },
-  ]);
+  const [todos, setTodos] = useState([]);
 
   const checkTodo = (title, check) => {
     const newTodos = todos.map((todo) => {
@@ -26,8 +22,14 @@ function App() {
     setTodos(newTodos);
   };
 
+  const addTodo = (title) => {
+    const newTodos = [...todos, { title, completed: false }];
+    setTodos(newTodos);
+  };
+
   return (
     <div>
+      <NewTodo addTodo={addTodo} />
       {todos.map(({ completed, title }) => (
         <TodoItem
           completed={completed}

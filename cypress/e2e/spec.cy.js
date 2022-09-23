@@ -2,8 +2,19 @@
 const lineThroughCss = "line-through solid rgb(26, 32, 44)";
 
 describe("Todo App E2E Test", () => {
-  it("check if todo items works correctly", () => {
+  it("create todo items with form", () => {
     cy.visit("/");
+    cy.dataCy("todo-input").type("First item");
+    cy.dataCy("todo-input-submit").click();
+    cy.dataCy("todo-item").first().should("include.text", "First item");
+    cy.dataCy("todo-input").type("Second item{enter}");
+    cy.dataCy("todo-item").eq(1).should("include.text", "Second item");
+    cy.dataCy("todo-input").type("Third item{enter}");
+    cy.dataCy("todo-input").type("Fourth item{enter}");
+    cy.dataCy("todo-input").type("{enter}");
+  });
+
+  it("check if todo items works correctly", () => {
     cy.dataCy("todo-item").should("have.length", 4);
     cy.dataCy("todo-item-checkbox").first().click();
     cy.dataCy("todo-item-title").eq(1).click();
