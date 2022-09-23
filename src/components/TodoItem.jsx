@@ -4,8 +4,17 @@ import { CloseIcon } from "@chakra-ui/icons";
 
 function TodoItem({ completed, title, changeTodo, removeTodo }) {
   return (
-    <Flex px="8" py="2" align="center" wrap="nowrap" w="50%">
+    <Flex
+      data-cy="todo-item"
+      px="8"
+      py="2"
+      align="center"
+      wrap="nowrap"
+      w="50%"
+    >
       <Checkbox
+        id={`${title}-checkbox`}
+        data-cy="todo-item-checkbox"
         pr="2"
         size="lg"
         colorScheme="green"
@@ -15,9 +24,14 @@ function TodoItem({ completed, title, changeTodo, removeTodo }) {
           changeTodo(title, e.target.checked);
         }}
       />
-      <Text as={completed ? "s" : "p"}>{title}</Text>
+      <label htmlFor={`${title}-checkbox`}>
+        <Text data-cy="todo-item-title" as={completed ? "s" : "p"}>
+          {title}
+        </Text>
+      </label>
       <Spacer />
       <CloseIcon
+        data-cy="todo-item-delete"
         h="4"
         w="4"
         color="red.600"

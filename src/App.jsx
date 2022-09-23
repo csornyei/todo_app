@@ -4,10 +4,10 @@ import TodoItem from "./components/TodoItem";
 
 function App() {
   const [todos, setTodos] = useState([
-    { completed: true, title: "First item" },
+    { completed: false, title: "First item" },
     { completed: false, title: "Second item" },
     { completed: false, title: "Third item" },
-    { completed: true, title: "Fourth item" },
+    { completed: false, title: "Fourth item" },
   ]);
 
   const checkTodo = (title, check) => {
