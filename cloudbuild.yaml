@@ -1,0 +1,24 @@
+timeout: "1200s"
+
+steps:
+  - id: "install dependencies"
+    name: "gcr.io/cloud-builders/npm"
+    entrypoint: "npm"
+    args:
+      - "install"
+
+  - id: "build app"
+    name: "gcr.io/cloud-builders/npm"
+    entrypoint: "npm"
+    args:
+      - "run"
+      - "build"
+
+  - id: "copy files to cloud bucket"
+    name: "gcr.io/cloud-builders/gsutil"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - "-e"
+      - |
+        gsutil -m cp -r ./build/* gs://todo_app_csornyei
