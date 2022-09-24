@@ -1,17 +1,16 @@
 import React from "react";
 import { Checkbox, Flex, Spacer, Text } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
+import { TodoItem as TodoItemType } from "../utils/types";
 
 type TodoItemProps = {
-  completed: boolean;
-  title: string;
+  item: TodoItemType;
   changeTodo: (title: string, completed: boolean) => void;
-  removeTodo: (title: string) => void;
+  removeTodo: (title: string, local: boolean) => void;
 };
 
 const TodoItem: React.FC<TodoItemProps> = ({
-  completed,
-  title,
+  item,
   changeTodo,
   removeTodo,
 }) => {
@@ -25,19 +24,19 @@ const TodoItem: React.FC<TodoItemProps> = ({
       w="50%"
     >
       <Checkbox
-        id={`${title}-checkbox`}
+        id={`${item.title}-checkbox`}
         data-cy="todo-item-checkbox"
         pr="2"
         size="lg"
         colorScheme="green"
-        isChecked={completed}
+        isChecked={item.completed}
         onChange={(e) => {
-          changeTodo(title, e.target.checked);
+          changeTodo(item.id, e.target.checked);
         }}
       />
-      <label htmlFor={`${title}-checkbox`}>
-        <Text data-cy="todo-item-title" as={completed ? "s" : "p"}>
-          {title}
+      <label htmlFor={`${item.title}-checkbox`}>
+        <Text data-cy="todo-item-title" as={item.completed ? "s" : "p"}>
+          {item.title}
         </Text>
       </label>
       <Spacer />
@@ -47,7 +46,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
         w="4"
         color="red.600"
         cursor="pointer"
-        onClick={() => removeTodo(title)}
+        onClick={() => removeTodo(item.id, item.local)}
       />
     </Flex>
   );

@@ -3,4 +3,5 @@ export type TodoItem = {
   title: string;
   completed: boolean;
   uid?: string;
+  local: boolean;
 };

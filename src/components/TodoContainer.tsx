@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "../state/UserContext";
-import { getTodos, saveTodo } from "../utils/storage";
+import { deleteTodo, getTodos, saveTodo } from "../utils/storage";
 import { TodoItem as TodoItemType } from "../utils/types";
 import NewTodo from "./NewTodo";
 import TodoItem from "./TodoItem";
@@ -14,7 +14,6 @@ function TodoContainer() {
       if (localStorage) {
         try {
           const savedTodos = await getTodos(user);
-          console.log(savedTodos);
           setTodos(savedTodos);
         } catch (error) {
           console.error(error);
@@ -24,36 +23,34 @@ function TodoContainer() {
     loadTodos().catch((error) => console.error(error));
   }, [user]);
 
-  const checkTodo = (title: string, check: boolean) => {
+  const checkTodo = (id: string, check: boolean) => {
     const newTodos = todos.map((todo) => {
-      if (todo.title === title) {
+      if (todo.id === id) {
         return { ...todo, completed: check };
       }
       return todo;
     });
-    console.log(newTodos);
     setTodos(newTodos);
   };
 
-  const removeTodo = (title: string) => {
-    const newTodos = todos.filter((todo) => todo.title !== title);
+  const removeTodo = async (id: string, local: boolean) => {
+    const newTodos = await deleteTodo(user, id, local);
     setTodos(newTodos);
   };
 
   const addTodo = async (title: string) => {
-    const id = await saveTodo(user, { title, completed: false });
-    const newTodos = [...todos, { id, title, completed: false }];
+    const todo = await saveTodo(user, { title, completed: false });
+    const newTodos = [...todos, todo];
     setTodos(newTodos);
   };
 
   return (
     <main>
       <NewTodo addTodo={addTodo} />
-      {todos.map(({ completed, title }) => (
+      {todos.map((item) => (
         <TodoItem
-          completed={completed}
-          title={title}
-          key={title}
+          item={item}
+          key={item.id}
           changeTodo={checkTodo}
           removeTodo={removeTodo}
         />
