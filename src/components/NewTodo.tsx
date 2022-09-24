@@ -8,7 +8,11 @@ import {
 import { CheckIcon } from "@chakra-ui/icons";
 import { UserContext } from "../state/UserContext";
 
-function NewTodo({ addTodo }) {
+type NewTodoProps = {
+  addTodo: (title: string) => void;
+};
+
+const NewTodo: React.FC<NewTodoProps> = ({ addTodo }) => {
   const user = useContext(UserContext);
   const [inputValue, setInputValue] = useState("");
   const addTodoItem = () => {
@@ -53,6 +57,6 @@ function NewTodo({ addTodo }) {
       />
     </InputGroup>
   );
-}
+};
 
 export default NewTodo;
