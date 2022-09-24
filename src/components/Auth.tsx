@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   getAuth,
   GoogleAuthProvider,
@@ -38,13 +38,13 @@ function AuthContainer() {
     try {
       const result = await signInWithPopup(auth, provider);
       const { user } = result;
-      signInAction(dispatch, user);
+      signInAction(dispatch!, user);
     } catch (error) {}
   };
 
   const signOut = async () => {
     await auth.signOut();
-    signOutAction(dispatch);
+    signOutAction(dispatch!);
   };
   return !!user ? (
     <Flex alignItems="center" justify="space-between" w="20%">
@@ -56,7 +56,7 @@ function AuthContainer() {
   ) : (
     <Skeleton isLoaded={!loading} startColor="green.100" endColor="green.800">
       <Button colorScheme="green" onClick={signUp}>
-        Sign up with Google
+        Sign in with Google
       </Button>
     </Skeleton>
   );

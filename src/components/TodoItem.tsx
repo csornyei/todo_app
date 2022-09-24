@@ -2,7 +2,19 @@ import React from "react";
 import { Checkbox, Flex, Spacer, Text } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
 
-function TodoItem({ completed, title, changeTodo, removeTodo }) {
+type TodoItemProps = {
+  completed: boolean;
+  title: string;
+  changeTodo: (title: string, completed: boolean) => void;
+  removeTodo: (title: string) => void;
+};
+
+const TodoItem: React.FC<TodoItemProps> = ({
+  completed,
+  title,
+  changeTodo,
+  removeTodo,
+}) => {
   return (
     <Flex
       data-cy="todo-item"
@@ -20,7 +32,6 @@ function TodoItem({ completed, title, changeTodo, removeTodo }) {
         colorScheme="green"
         isChecked={completed}
         onChange={(e) => {
-          console.log(e.target.checked);
           changeTodo(title, e.target.checked);
         }}
       />
@@ -40,6 +51,6 @@ function TodoItem({ completed, title, changeTodo, removeTodo }) {
       />
     </Flex>
   );
-}
+};
 
 export default TodoItem;
