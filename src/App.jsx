@@ -1,7 +1,7 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import NewTodo from "./components/NewTodo";
 import TodoItem from "./components/TodoItem";
+import Header from "./components/Header";
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -29,6 +29,7 @@ function App() {
 
   return (
     <div>
+      <Header />
       <NewTodo addTodo={addTodo} />
       {todos.map(({ completed, title }) => (
         <TodoItem
