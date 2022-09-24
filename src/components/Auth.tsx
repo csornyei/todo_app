@@ -13,6 +13,7 @@ import {
   UserContext,
   UserDispatchContext,
 } from "../state/UserContext";
+import { createCollection } from "../utils/storage";
 
 const auth = getAuth(FirebaseApp);
 const provider = new GoogleAuthProvider();
@@ -23,10 +24,11 @@ function AuthContainer() {
   const dispatch = useContext(UserDispatchContext);
   useEffect(() => {
     if (dispatch) {
-      onAuthStateChanged(auth, (user) => {
+      onAuthStateChanged(auth, async (user) => {
         setLoading(false);
         if (user) {
           signInAction(dispatch, user);
+          createCollection(user);
         } else {
           signOutAction(dispatch);
         }

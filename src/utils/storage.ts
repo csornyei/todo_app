@@ -6,6 +6,7 @@ import {
   deleteDoc,
   doc,
   updateDoc,
+  setDoc,
 } from "firebase/firestore";
 import { User } from "firebase/auth";
 import FirebaseApp from "./firebase";
@@ -14,6 +15,10 @@ import { TodoItem } from "./types";
 const LOCAL_STORAGE_TODO_KEY = "local_todos";
 
 const db = getFirestore(FirebaseApp);
+
+export async function createCollection(user: User) {
+  await setDoc(doc(db, `todos/${user.uid}`), {});
+}
 
 export async function saveTodo(user: User | null, todo: Partial<TodoItem>) {
   todo.local = true;
@@ -25,7 +30,7 @@ export async function saveTodo(user: User | null, todo: Partial<TodoItem>) {
     todo.local = false;
     todo.uid = uid;
     try {
-      const result = await addDoc(collection(db, `todos/user/${uid}`), {
+      const result = await addDoc(collection(db, `todos/${uid}/todos`), {
         ...todo,
       });
       todo.id = result.id;
@@ -45,7 +50,7 @@ export async function getTodos(user: User | null) {
       throw new Error("Can't get todo, user is not valid!");
     }
     try {
-      const querySnapshot = await getDocs(collection(db, "todos", "user", uid));
+      const querySnapshot = await getDocs(collection(db, `todos/${uid}/todos`));
       querySnapshot.forEach((doc) => {
         const localIndex = result.findIndex((item) => item.id === doc.id);
         if (localIndex !== -1) {
@@ -63,6 +68,7 @@ export async function getTodos(user: User | null) {
         }
       });
     } catch (error) {
+      console.error(error);
       throw new Error("Can't get todo, error while getting!");
     }
   }
@@ -117,7 +123,7 @@ export async function checkTodo(user: User | null, todo: TodoItem) {
     if (!uid) {
       throw new Error("Can't delete todo, user is not valid!");
     }
-    const docRef = doc(db, `todos/user/${uid}/${id}`);
+    const docRef = doc(db, `todos/${uid}/todos/${id}`);
     await updateDoc(docRef, {
       completed,
     });
@@ -136,7 +142,7 @@ export async function deleteTodo(
     if (!uid) {
       throw new Error("Can't delete todo, user is not valid!");
     }
-    await deleteDoc(doc(db, `todos/user/${uid}/${id}`));
+    await deleteDoc(doc(db, `todos/${uid}/todos/${id}`));
   }
   return deleteLocalTodo(id);
 }
