@@ -1,6 +1,30 @@
 timeout: "1200s"
 
 steps:
+  - id: "get api key from secret manager"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args:
+      [
+        "secrets",
+        "version",
+        "access",
+        "1",
+        '--secrets="firebase_api_key"',
+        "> api_key",
+      ]
+
+  - id: "ls"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "bash"
+    args:
+      - "ls"
+
+  - id: "create .env file"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "bash"
+    args: ["echo", '"REACT_APP_FIREBASE_API_KEY=$(cat api_key)"', ">", ".env"]
+
   - id: "install dependencies"
     name: "gcr.io/cloud-builders/npm"
     entrypoint: "npm"
@@ -15,13 +39,8 @@ steps:
       - "build"
 
   - id: "copy files to cloud bucket"
-    name: "gcr.io/cloud-builders/gsutil"
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - "-e"
-      - |
-        gsutil -m cp -r ./build/* gs://todo_app_csornyei
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    args: ["gsutil", "-m", "cp", "-r", "./build/*", "gs://todo_app_csornyei"]
 
   - id: "test with cypress"
     name: "cypress/included:10.8.0"

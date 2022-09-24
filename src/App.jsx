@@ -1,9 +1,16 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import NewTodo from "./components/NewTodo";
 import TodoItem from "./components/TodoItem";
+import Header from "./components/Header";
+import {
+  UserContext,
+  UserDispatchContext,
+  userReducer,
+} from "./state/UserContext";
+import { useReducer } from "react";
 
 function App() {
+  const [user, dispatch] = useReducer(userReducer, null);
   const [todos, setTodos] = useState([]);
 
   const checkTodo = (title, check) => {
@@ -28,18 +35,21 @@ function App() {
   };
 
   return (
-    <div>
-      <NewTodo addTodo={addTodo} />
-      {todos.map(({ completed, title }) => (
-        <TodoItem
-          completed={completed}
-          title={title}
-          key={title}
-          changeTodo={checkTodo}
-          removeTodo={removeTodo}
-        />
-      ))}
-    </div>
+    <UserContext.Provider value={user}>
+      <UserDispatchContext.Provider value={dispatch}>
+        <Header />
+        <NewTodo addTodo={addTodo} />
+        {todos.map(({ completed, title }) => (
+          <TodoItem
+            completed={completed}
+            title={title}
+            key={title}
+            changeTodo={checkTodo}
+            removeTodo={removeTodo}
+          />
+        ))}
+      </UserDispatchContext.Provider>
+    </UserContext.Provider>
   );
 }
 
