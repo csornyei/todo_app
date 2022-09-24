@@ -1,30 +1,6 @@
 timeout: "1200s"
 
 steps:
-  - id: "get api key from secret manager"
-    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
-    entrypoint: "gcloud"
-    args:
-      [
-        "secrets",
-        "version",
-        "access",
-        "1",
-        '--secrets="firebase_api_key"',
-        "> api_key",
-      ]
-
-  - id: "ls"
-    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
-    entrypoint: "bash"
-    args:
-      - "ls"
-
-  - id: "create .env file"
-    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
-    entrypoint: "bash"
-    args: ["echo", '"REACT_APP_FIREBASE_API_KEY=$(cat api_key)"', ">", ".env"]
-
   - id: "install dependencies"
     name: "gcr.io/cloud-builders/npm"
     entrypoint: "npm"
@@ -37,6 +13,7 @@ steps:
     args:
       - "run"
       - "build"
+    secretEnv: ["REACT_APP_FIREBASE_API_KEY"]
 
   - id: "copy files to cloud bucket"
     name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
@@ -48,3 +25,8 @@ steps:
     args:
       - "run"
       - "e2e"
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/todo-gcloud/secrets/firebase_api_key/versions/1
+      env: "REACT_APP_FIREBASE_API_KEY"
