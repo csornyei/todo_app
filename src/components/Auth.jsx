@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   getAuth,
   GoogleAuthProvider,
@@ -7,35 +7,44 @@ import {
 } from "firebase/auth";
 import { Button, Flex, Skeleton, Text } from "@chakra-ui/react";
 import FirebaseApp from "../utils/firebase";
+import {
+  signInAction,
+  signOutAction,
+  UserContext,
+  UserDispatchContext,
+} from "../state/UserContext";
 
 const auth = getAuth(FirebaseApp);
 const provider = new GoogleAuthProvider();
 
 function AuthContainer() {
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const user = useContext(UserContext);
+  const dispatch = useContext(UserDispatchContext);
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      setLoading(false);
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-      }
-    });
-  }, []);
+    if (dispatch) {
+      onAuthStateChanged(auth, (user) => {
+        setLoading(false);
+        if (user) {
+          signInAction(dispatch, user);
+        } else {
+          signOutAction(dispatch);
+        }
+      });
+    }
+  }, [dispatch]);
 
   const signUp = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const { user } = result;
-      setUser(user);
+      signInAction(dispatch, user);
     } catch (error) {}
   };
 
   const signOut = async () => {
     await auth.signOut();
-    setUser(null);
+    signOutAction(dispatch);
   };
   return !!user ? (
     <Flex alignItems="center" justify="space-between" w="20%">

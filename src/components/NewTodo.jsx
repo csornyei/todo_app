@@ -1,9 +1,15 @@
+import React, { useState, useContext } from "react";
+import {
+  Input,
+  InputGroup,
+  InputRightElement,
+  Tooltip,
+} from "@chakra-ui/react";
 import { CheckIcon } from "@chakra-ui/icons";
-import { Input, InputGroup, InputRightElement } from "@chakra-ui/react";
-import React from "react";
-import { useState } from "react";
+import { UserContext } from "../state/UserContext";
 
 function NewTodo({ addTodo }) {
+  const user = useContext(UserContext);
   const [inputValue, setInputValue] = useState("");
   const addTodoItem = () => {
     if (inputValue.trim().length > 0) {
@@ -22,7 +28,7 @@ function NewTodo({ addTodo }) {
     >
       <Input
         data-cy="todo-input"
-        size="lg"
+        size="md"
         value={inputValue}
         onChange={(event) => setInputValue(event.target.value)}
         onKeyDown={(event) => {
@@ -33,8 +39,17 @@ function NewTodo({ addTodo }) {
       />
       <InputRightElement
         onClick={addTodoItem}
+        cursor="pointer"
         data-cy="todo-input-submit"
-        children={<CheckIcon color="green.500" />}
+        children={
+          !!user ? (
+            <CheckIcon color="green.500" />
+          ) : (
+            <Tooltip label="Todos are only saved in local storage">
+              <CheckIcon color="green.500" />
+            </Tooltip>
+          )
+        }
       />
     </InputGroup>
   );
