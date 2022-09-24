@@ -5,7 +5,7 @@ import { TodoItem as TodoItemType } from "../utils/types";
 
 type TodoItemProps = {
   item: TodoItemType;
-  changeTodo: (title: string, completed: boolean) => void;
+  changeTodo: (todo: TodoItemType) => void;
   removeTodo: (title: string, local: boolean) => void;
 };
 
@@ -31,7 +31,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
         colorScheme="green"
         isChecked={item.completed}
         onChange={(e) => {
-          changeTodo(item.id, e.target.checked);
+          changeTodo({ ...item, completed: e.target.checked });
         }}
       />
       <label htmlFor={`${item.title}-checkbox`}>

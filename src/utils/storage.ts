@@ -5,6 +5,7 @@ import {
   getDocs,
   deleteDoc,
   doc,
+  updateDoc,
 } from "firebase/firestore";
 import { User } from "firebase/auth";
 import FirebaseApp from "./firebase";
@@ -98,7 +99,31 @@ function saveLocalTodo(todo: Partial<TodoItem>) {
   return todo as TodoItem;
 }
 
-export async function checkTodo(user: User, todo: TodoItem) {}
+function checkLocalTood(todo: TodoItem) {
+  const updatedTodo = getLocalTodos().map((item) => {
+    if (item.id === todo.id) {
+      item.completed = todo.completed;
+    }
+    return item;
+  });
+  saveTodos(updatedTodo);
+  return updatedTodo;
+}
+
+export async function checkTodo(user: User | null, todo: TodoItem) {
+  const { local, id, completed } = todo;
+  if (!local && user) {
+    const { uid } = user;
+    if (!uid) {
+      throw new Error("Can't delete todo, user is not valid!");
+    }
+    const docRef = doc(db, `todos/user/${uid}/${id}`);
+    await updateDoc(docRef, {
+      completed,
+    });
+  }
+  return checkLocalTood(todo);
+}
 
 export async function deleteTodo(
   user: User | null,

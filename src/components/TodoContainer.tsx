@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "../state/UserContext";
-import { deleteTodo, getTodos, saveTodo } from "../utils/storage";
+import { checkTodo, deleteTodo, getTodos, saveTodo } from "../utils/storage";
 import { TodoItem as TodoItemType } from "../utils/types";
 import NewTodo from "./NewTodo";
 import TodoItem from "./TodoItem";
@@ -23,13 +23,8 @@ function TodoContainer() {
     loadTodos().catch((error) => console.error(error));
   }, [user]);
 
-  const checkTodo = (id: string, check: boolean) => {
-    const newTodos = todos.map((todo) => {
-      if (todo.id === id) {
-        return { ...todo, completed: check };
-      }
-      return todo;
-    });
+  const onChangeTodo = async (todo: TodoItemType) => {
+    const newTodos = await checkTodo(user, todo);
     setTodos(newTodos);
   };
 
@@ -51,7 +46,7 @@ function TodoContainer() {
         <TodoItem
           item={item}
           key={item.id}
-          changeTodo={checkTodo}
+          changeTodo={onChangeTodo}
           removeTodo={removeTodo}
         />
       ))}
