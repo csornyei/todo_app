@@ -27,3 +27,16 @@
 Cypress.Commands.add("dataCy", (selector, ...args) => {
   return cy.get(`[data-cy=${selector}]`, ...args);
 });
+
+Cypress.Commands.add("createTodo", (amount, ...args) => {
+  const todos = [];
+  for (let i = 0; i < amount; i++) {
+    todos.push({
+      local: true,
+      id: `${i}`,
+      title: `${i} item`,
+      completed: false,
+    });
+  }
+  window.localStorage.setItem("local_todos", JSON.stringify(todos));
+});
