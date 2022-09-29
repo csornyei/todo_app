@@ -15,9 +15,10 @@ steps:
       - "build"
     secretEnv: ["REACT_APP_FIREBASE_API_KEY"]
 
-  - id: "copy files to cloud bucket"
-    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
-    args: ["gsutil", "-m", "cp", "-r", "./build/*", "gs://todo_app_csornyei"]
+  - id: "deploy with firebase"
+    name: "gcr.io/todo-gcloud/firebase"
+    args: ["deploy", "--project=todo-gcloud", "--only=hosting"]
+    secretEnv: ["FIREBASE_TOKEN"]
 
   - id: "test with cypress"
     name: "cypress/included:10.8.0"
@@ -30,3 +31,5 @@ availableSecrets:
   secretManager:
     - versionName: projects/todo-gcloud/secrets/firebase_api_key/versions/1
       env: "REACT_APP_FIREBASE_API_KEY"
+    - versionName: projects/todo-gcloud/secrets/firebase_ci_key/versions/1
+      env: "FIREBASE_TOKEN"
