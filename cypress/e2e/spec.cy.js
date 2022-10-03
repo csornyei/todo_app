@@ -10,6 +10,7 @@ describe("Todo App E2E Test", () => {
     cy.dataCy("todo-item").first().should("include.text", "First item");
     cy.dataCy("todo-input").type("Second item{enter}");
     cy.dataCy("todo-item").eq(1).should("include.text", "Second item");
+    cy.screenshot();
   });
 
   it("check if todo items works correctly", () => {
@@ -37,5 +38,6 @@ describe("Todo App E2E Test", () => {
     cy.dataCy("todo-item-delete").last().click();
     cy.dataCy("todo-item").should("have.length", 3);
     cy.dataCy("todo-item").last().should("include.text", "2 item");
+    cy.screenshot();
   });
 });

@@ -27,6 +27,17 @@ steps:
       - "run"
       - "e2e"
 
+  - id: "upload e2e screenshots"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "/bin/sh"
+    args:
+      - "-c"
+      - "-e"
+      - |
+        if [ -d "./cypress/screenshots" ] && [ -n "$(ls -A ./cypress/screenshots 2>/dev/null)" ]; then
+          gsutil -m cp -r ./cypress/screenshots/* gs://todo_app_csornyei/screenshots
+        fi
+
 availableSecrets:
   secretManager:
     - versionName: projects/todo-gcloud/secrets/firebase_api_key/versions/1
